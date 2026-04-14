@@ -17,9 +17,18 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _fcmService.initialize(onData: (message) {
+      final asset = (message.data['asset'] ?? 'default').toString();
+      final action = (message.data['action'] ?? '').toString();
+
       setState(() {
-        statusText = message.notification?.title ?? 'Payload received';
-        imagePath = 'assets/images/${message.data['asset'] ?? 'default'}.png';
+        statusText =
+            message.notification?.title ??
+            (action.isNotEmpty ? 'Action: $action' : 'Payload received');
+        imagePath = 'assets/images/$asset.png';
+
+        if (action == 'show_animation') {
+          statusText = 'Showing promo animation';
+        }
       });
     });
   }
